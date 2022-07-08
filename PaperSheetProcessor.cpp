@@ -39,21 +39,27 @@ cv::Mat *PaperSheetProcessor::processImage(std::string filename)
     }
 
     cv::Mat image;
-    double height = 800;
+    double height = init_image.rows;
     cv::Size imageSize(int(height / init_image.rows * init_image.cols), height);
     cv::resize(init_image, image, imageSize);
 
     cv::Mat blurred_image;
     cv::medianBlur(image, blurred_image, 9);
 
+    cv::imwrite("blurred.png", blurred_image);
+
     cv::Mat gray_image;
-    cv::cvtColor(blurred_image, gray_image, CV_BGR2GRAY);
+    cv::cvtColor(blurred_image, gray_image, cv::COLOR_BGR2GRAY);
+
+    cv::imwrite("gray.png", gray_image);
 
     cv::Mat canny_image;
     cv::Canny(gray_image, canny_image, 30, 50, 3);
 
+    cv::imwrite("canny.png", canny_image);
+
     std::vector<std::vector<cv::Point>> contours;
-    cv::findContours(canny_image, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+    cv::findContours(canny_image, contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
 
     double maxFoundPerimeter = 0;
     std::vector<cv::Point> maxContour;
